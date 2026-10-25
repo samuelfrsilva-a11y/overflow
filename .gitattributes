@@ -1,0 +1,6 @@
+# Fins de linha: LF no repositorio e na copia de trabalho, em qualquer sistema
+# (o Git para Windows vem com core.autocrlf=true, que converteria para CRLF no checkout).
+* text=auto eol=lf
+
+# Texto oficial da licenca: preservado byte a byte (tests/test_pacote.py confere o SHA-256).
+LICENSE -text

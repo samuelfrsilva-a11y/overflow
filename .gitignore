@@ -1,0 +1,100 @@
+# Overflow - o que NUNCA deve ir para o Git.
+# Lembrete: o .gitignore nao remove do indice arquivos que ja foram adicionados.
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# Bancos de dados (dados reais, copias, WAL/SHM/journal)
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.bak
+
+# Pesos de modelos (baixar separadamente; veja README)
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+*.safetensors
+*.ckpt
+*.h5
+*.mlmodel
+*.mlpackage/
+*.openvino/
+*_openvino_model/
+modelos/
+
+# Embeddings e dados serializados (podem conter dados biometricos)
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.joblib
+
+# Imagens, videos e datasets (podem conter rostos de pessoas; direitos de uso nao comprovados)
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.webp
+*.gif
+*.tif
+*.tiff
+*.heic
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+uniforme/
+dados/
+datasets/
+pessoa_video/
+rosto_video/
+runs/
+*.cache
+
+# Arquivos compactados (podem embutir qualquer um dos itens acima)
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# Backups e inventarios locais
+_backup/
+backup*/
+*_backup/
+
+# Segredos e configuracao local (o modelo .env.example pode ser versionado)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store

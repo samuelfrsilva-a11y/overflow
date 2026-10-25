@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumo {{ mes }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f2f4f7; color: #222; }
+        header { background: #111827; color: white; padding: 20px 40px;
+                 display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; }
+        header a { color: white; text-decoration: none; background: #374151;
+                   padding: 8px 16px; border-radius: 6px; margin-left: 8px; }
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 25px 40px; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .card h3 { margin-top: 0; color: #555; font-size: 15px; }
+        .card p { font-size: 30px; font-weight: bold; margin-bottom: 0; }
+        .destaques { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 40px; }
+        .caixa { background: white; padding: 25px; border-radius: 10px; }
+        .caixa h2 { margin-top: 0; }
+        .caixa li { margin-bottom: 8px; }
+        .graficos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin: 25px 40px; }
+        .parcial { background: #fffbeb; border: 1px solid #f59e0b; color: #92400e;
+                   margin: 25px 40px 0; padding: 14px 20px; border-radius: 8px; }
+        .vazio { margin: 40px; background: white; padding: 25px; border-radius: 10px; }
+        @media (max-width: 900px) {
+            .cards, .destaques, .graficos { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Resumo de {{ mes }}</h1>
+    <div>
+        <a href="/resumos">Todos os resumos</a>
+        <a href="/">Dashboard</a>
+    </div>
+</header>
+
+{% if not r %}
+<div class="vazio">Não há dados para {{ mes }}.</div>
+{% else %}
+
+{% if parcial %}
+<div class="parcial">Resumo parcial: o mês ainda não terminou. Os números continuam mudando.</div>
+{% endif %}
+
+<section class="cards">
+    <div class="card"><h3>Entradas</h3><p>{{ r.entradas }}</p></div>
+    <div class="card"><h3>Saídas</h3><p>{{ r.saidas }}</p></div>
+    <div class="card"><h3>Pessoas diferentes</h3><p>{{ r.pessoas_diferentes }}</p></div>
+    <div class="card"><h3>Tempo médio</h3><p>{{ r.tempo_medio }} s</p></div>
+</section>
+
+<section class="destaques">
+    <div class="caixa">
+        <h2>Melhores horários</h2>
+        <ol>
+            {% for h in r.melhores_horas %}
+            <li><b>{{ h.hora }}h</b> — {{ h.total }} entradas</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="caixa">
+        <h2>Melhores dias</h2>
+        <ol>
+            {% for d in r.melhores_dias %}
+            <li><b>{{ d.data }}</b> — {{ d.total }} entradas</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="caixa">
+        <h2>Melhor semana</h2>
+        <p style="font-size:20px; margin:0;">
+            <b>Semana {{ r.melhor_semana.semana }}</b>
+            (dias {{ r.melhor_semana.inicio }} a {{ r.melhor_semana.fim }})
+            — {{ r.melhor_semana.total }} entradas
+        </p>
+    </div>
+
+    <div class="caixa">
+        <h2>Dia da semana mais movimentado</h2>
+        <p style="font-size:20px; margin:0;">
+            <b>{{ r.melhor_dia_semana.nome }}</b> — {{ r.melhor_dia_semana.total }} entradas no mês
+        </p>
+    </div>
+</section>
+
+<section class="graficos">
+    <div class="caixa"><h2>Por hora</h2><canvas id="gHora"></canvas></div>
+    <div class="caixa"><h2>Por dia</h2><canvas id="gDia"></canvas></div>
+    <div class="caixa"><h2>Por semana do mês</h2><canvas id="gSemana"></canvas></div>
+    <div class="caixa"><h2>Por dia da semana</h2><canvas id="gDow"></canvas></div>
+</section>
+
+<script>
+const R = {{ r | tojson }};
+
+function barra(id, rotulos, valores, cor, tipo) {
+    new Chart(document.getElementById(id), {
+        type: tipo || "bar",
+        data: { labels: rotulos, datasets: [{ label: "Entradas", data: valores, backgroundColor: cor,
+                borderColor: cor, tension: 0.3 }] },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+}
+
+barra("gHora", R.horas.map(x => x.hora + ":00"), R.horas.map(x => x.total), "#3b82f6");
+barra("gDia", R.dias.map(x => x.data.slice(8)), R.dias.map(x => x.total), "#10b981", "line");
+barra("gSemana", R.semanas.map(x => "Semana " + x.semana + " (" + x.inicio + "-" + x.fim + ")"),
+      R.semanas.map(x => x.total), "#8b5cf6");
+barra("gDow", R.dias_semana.map(x => x.nome.slice(0, 3)), R.dias_semana.map(x => x.total), "#f59e0b");
+</script>
+
+{% endif %}
+
+</body>
+</html>

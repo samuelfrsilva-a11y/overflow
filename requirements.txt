@@ -1,0 +1,11 @@
+# Instalacao completa: painel web + camera (YOLO/ByteTrack) + cadastro de rostos.
+# Versoes verificadas no ambiente de desenvolvimento (Python 3.14.7, Windows 11, somente CPU).
+# torch/torchvision CPU vem do indice oficial do PyTorch.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+-r requirements-web.txt
+opencv-python==5.0.0.93
+ultralytics==8.4.173
+lap==0.5.13
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu

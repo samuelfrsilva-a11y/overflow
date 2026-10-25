@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumos mensais</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f2f4f7; color: #222; }
+        header { background: #111827; color: white; padding: 20px 40px;
+                 display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; }
+        header a { color: white; text-decoration: none; background: #374151;
+                   padding: 8px 16px; border-radius: 6px; }
+        .conteudo { margin: 25px 40px; }
+        .caixa { background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #f3f4f6; }
+        a.link { color: #1d4ed8; font-weight: bold; text-decoration: none; }
+        .nota { color: #6b7280; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Resumos mensais</h1>
+    <a href="/">Voltar para o Dashboard</a>
+</header>
+
+<div class="conteudo">
+
+    <div class="caixa">
+        <h2 style="margin-top:0">Mês atual (parcial)</h2>
+        <p><a class="link" href="/resumo/{{ mes_atual }}">Ver resumo de {{ mes_atual }} até agora</a></p>
+        <p class="nota">Quando o mês virar, este resumo é salvo automaticamente e os registros do mês
+            saem do painel (ficam guardados no banco).</p>
+    </div>
+
+    <div class="caixa">
+        <h2 style="margin-top:0">Meses encerrados</h2>
+        {% if resumos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Mês</th><th>Entradas</th><th>Saídas</th><th>Pessoas diferentes</th>
+                    <th>Melhor horário</th><th>Melhor dia</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in resumos %}
+                <tr>
+                    <td>{{ r.mes }}</td>
+                    <td>{{ r.entradas }}</td>
+                    <td>{{ r.saidas }}</td>
+                    <td>{{ r.pessoas_diferentes }}</td>
+                    <td>{{ r.melhores_horas[0].hora }}h ({{ r.melhores_horas[0].total }})</td>
+                    <td>{{ r.melhores_dias[0].data }} ({{ r.melhores_dias[0].total }})</td>
+                    <td><a class="link" href="/resumo/{{ r.mes }}">Abrir</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="nota">Ainda não há meses encerrados.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
